@@ -18,19 +18,20 @@
 package rest
 
 import (
+	"net/http"
+
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/polynetwork/cosmos-poly-module/ccm/internal/types"
-	"net/http"
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
 // RegisterRoutes - Central function to define routes that get registered by the main application
-func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {
+func registerTxRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc("/ccm/process_crosschain_tx", ProcessCrossChainTxRequestHandlerFn(cliCtx)).Methods("POST")
 
 }
@@ -46,7 +47,7 @@ type ProcessCrossChainTxReq struct {
 }
 
 // SendRequestHandlerFn - http request handler to send coins to a address.
-func ProcessCrossChainTxRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func ProcessCrossChainTxRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req ProcessCrossChainTxReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {

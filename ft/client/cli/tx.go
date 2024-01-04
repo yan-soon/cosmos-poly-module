@@ -19,22 +19,23 @@ package cli
 
 import (
 	"bufio"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
-	"strings"
 
 	"encoding/hex"
 	"fmt"
+	"math/big"
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/polynetwork/cosmos-poly-module/ft/internal/types"
-	"math/big"
-	"strconv"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -71,7 +72,7 @@ $ %s tx %s create-denom cosmos1lzk4nch5v2snduup2uujpud9j6gqeunqarx2d9 ont
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 			creator, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
@@ -104,7 +105,7 @@ $ %s tx %s bind-asset-hash ont 3 00000000000000000001 100000
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 			sourceAssetDenom := args[0]
 
 			toChainIdStr := args[1]
@@ -150,7 +151,7 @@ $ %s tx %s lock ont 3 616f2a4a38396ff203ea01e6c070ae421bb8ce2d 123
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 			sourceAssetDenom := args[0]
 
 			toChainIdStr := args[1]
@@ -194,7 +195,7 @@ $ %s tx %s create-coins cosmos1lzk4nch5v2snduup2uujpud9j6gqeunqarx2d9  100000mst
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 			creator, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err

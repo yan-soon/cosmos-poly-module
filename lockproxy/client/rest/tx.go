@@ -24,19 +24,20 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 
 	"encoding/hex"
 	"errors"
-	"github.com/polynetwork/cosmos-poly-module/lockproxy/internal/types"
 	"strconv"
+
+	"github.com/polynetwork/cosmos-poly-module/lockproxy/internal/types"
 )
 
 // RegisterRoutes - Central function to define routes that get registered by the main application
-func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {
+func registerTxRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc("/lockproxy/create_lock_proxy", createLockProxyRequestHandlerFn(cliCtx)).Methods("POST")
 	r.HandleFunc(fmt.Sprintf("/lockproxy/create_and_delegate/{%s}/{%s}", Coin, LockProxyHash), CreateAndDelegateCoinRequestHandlerFn(cliCtx)).Methods("POST")
 	r.HandleFunc(fmt.Sprintf("/lockproxy/bind_proxy/{%s}/{%s}", ToChainId, ToLockProxyHash), bindProxyRequestHandlerFn(cliCtx)).Methods("POST")
@@ -67,7 +68,7 @@ type LockReq struct {
 }
 
 // SendRequestHandlerFn - http request handler to send coins to a address.
-func createLockProxyRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func createLockProxyRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var req BaseReq
@@ -85,7 +86,7 @@ func createLockProxyRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc
 	}
 }
 
-func CreateAndDelegateCoinRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func CreateAndDelegateCoinRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -116,7 +117,7 @@ func CreateAndDelegateCoinRequestHandlerFn(cliCtx context.CLIContext) http.Handl
 	}
 }
 
-func bindProxyRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func bindProxyRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		toProxyHashStr := vars[ToLockProxyHash]
@@ -150,7 +151,7 @@ func bindProxyRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	}
 }
 
-func bindAssetRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func bindAssetRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req BindAssetHashReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
@@ -167,7 +168,7 @@ func bindAssetRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	}
 }
 
-func lockRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func lockRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req LockReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {

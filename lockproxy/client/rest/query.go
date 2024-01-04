@@ -20,18 +20,20 @@ package rest
 import (
 	"encoding/hex"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"net/http"
+
+	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/polynetwork/cosmos-poly-module/lockproxy/client/common"
-	"strconv"
 )
 
-func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, queryRoute string) {
+func registerQueryRoutes(cliCtx client.Context, r *mux.Router, queryRoute string) {
 	r.HandleFunc(
 		fmt.Sprintf("/lockproxy/proxy_hash_by_operator/{%s}", Operator),
 		queryProxyHashByOperatorHandlerFn(cliCtx, queryRoute),
@@ -49,7 +51,7 @@ func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, queryRoute st
 
 }
 
-func queryProxyHashByOperatorHandlerFn(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func queryProxyHashByOperatorHandlerFn(cliCtx client.Context, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -69,7 +71,7 @@ func queryProxyHashByOperatorHandlerFn(cliCtx context.CLIContext, queryRoute str
 }
 
 func checkResponseQueryProxyHashByOperatorResponse(
-	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string, operator sdk.AccAddress) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx client.Context, queryRoute string, operator sdk.AccAddress) (res []byte, ok bool) {
 
 	res, err := common.QueryProxyByOperator(cliCtx, queryRoute, operator)
 	if err != nil {
@@ -80,7 +82,7 @@ func checkResponseQueryProxyHashByOperatorResponse(
 	return res, true
 }
 
-func queryProxyHashHandlerFn(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func queryProxyHashHandlerFn(cliCtx client.Context, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -109,7 +111,7 @@ func queryProxyHashHandlerFn(cliCtx context.CLIContext, queryRoute string) http.
 }
 
 func checkResponseQueryProxyHashResponse(
-	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string, lockproxy []byte, chainId uint64) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx client.Context, queryRoute string, lockproxy []byte, chainId uint64) (res []byte, ok bool) {
 
 	res, err := common.QueryProxyHash(cliCtx, queryRoute, lockproxy, chainId)
 	if err != nil {
@@ -120,7 +122,7 @@ func checkResponseQueryProxyHashResponse(
 	return res, true
 }
 
-func queryAssetHashHandlerFn(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func queryAssetHashHandlerFn(cliCtx client.Context, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -149,7 +151,7 @@ func queryAssetHashHandlerFn(cliCtx context.CLIContext, queryRoute string) http.
 }
 
 func checkResponseQueryAssetHashResponse(
-	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string, lockproxy []byte, denom string, chainId uint64) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx client.Context, queryRoute string, lockproxy []byte, denom string, chainId uint64) (res []byte, ok bool) {
 
 	res, err := common.QueryAssetHash(cliCtx, queryRoute, lockproxy, denom, chainId)
 	if err != nil {

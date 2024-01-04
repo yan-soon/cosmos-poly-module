@@ -23,12 +23,12 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/polynetwork/cosmos-poly-module/ft/client/common"
 )
 
-func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, queryRoute string) {
+func registerQueryRoutes(cliCtx client.Context, r *mux.Router, queryRoute string) {
 	r.HandleFunc(
 		fmt.Sprintf("/ft/denom_info/{%s}", Denom),
 		queryDemonHandlerFn(cliCtx, queryRoute),
@@ -41,7 +41,7 @@ func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, queryRoute st
 
 }
 
-func queryDemonHandlerFn(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func queryDemonHandlerFn(cliCtx client.Context, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -60,7 +60,7 @@ func queryDemonHandlerFn(cliCtx context.CLIContext, queryRoute string) http.Hand
 	}
 }
 
-func queryDemonCrossChainInfoHandlerFn(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func queryDemonCrossChainInfoHandlerFn(cliCtx client.Context, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -83,7 +83,7 @@ func queryDemonCrossChainInfoHandlerFn(cliCtx context.CLIContext, queryRoute str
 }
 
 func checkResponseQueryDenomInfoResponse(
-	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string, denom string) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx client.Context, queryRoute string, denom string) (res []byte, ok bool) {
 
 	res, err := common.QueryDenomInfo(cliCtx, queryRoute, denom)
 	if err != nil {
@@ -94,7 +94,7 @@ func checkResponseQueryDenomInfoResponse(
 	return res, true
 }
 func checkResponseQueryDenomCCInfoResponse(
-	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string, denom string, chainId uint64) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx client.Context, queryRoute string, denom string, chainId uint64) (res []byte, ok bool) {
 
 	res, err := common.QueryDenomCrossChainInfo(cliCtx, queryRoute, denom, chainId)
 	if err != nil {

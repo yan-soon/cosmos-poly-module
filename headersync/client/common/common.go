@@ -20,12 +20,12 @@ package common
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/polynetwork/cosmos-poly-module/headersync/internal/types"
 )
 
 // QueryDelegatorTotalRewards queries delegator total rewards.
-func QueryConsensusPeers(cliCtx context.CLIContext, queryRoute string, chainId uint64) ([]byte, error) {
+func QueryConsensusPeers(cliCtx client.Context, queryRoute string, chainId uint64) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryConsensusPeers),

@@ -19,6 +19,7 @@ package btcx
 
 import (
 	"encoding/json"
+
 	"github.com/polynetwork/cosmos-poly-module/btcx/client/rest"
 
 	"github.com/gorilla/mux"
@@ -26,7 +27,7 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -65,7 +66,7 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 }
 
 // register rest routes
-func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
+func (AppModuleBasic) RegisterRESTRoutes(ctx client.Context, rtr *mux.Router) {
 	rest.RegisterRoutes(ctx, rtr, StoreKey)
 }
 
@@ -79,7 +80,7 @@ func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetQueryCmd(StoreKey, cdc)
 }
 
-//___________________________
+// ___________________________
 // app module
 type AppModule struct {
 	AppModuleBasic

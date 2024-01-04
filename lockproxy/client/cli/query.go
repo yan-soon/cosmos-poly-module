@@ -19,21 +19,22 @@ package cli
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
-	"strings"
 
 	"github.com/spf13/cobra"
 
 	"encoding/hex"
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/polynetwork/cosmos-poly-module/lockproxy/client/common"
 	"github.com/polynetwork/cosmos-poly-module/lockproxy/internal/types"
-	"strconv"
 )
 
 // GetQueryCmd returns the cli query commands for the minting module.
@@ -73,7 +74,7 @@ $ %s query %s proxy-hash-by-operator cosmos1c0n2e6kuzp03pqm3av9q2v0fqn6ql3z5c5dd
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 
 			operatorAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -112,7 +113,7 @@ $ %s query %s proxy-hash cosmos1ayc6faczpj42eu7wjsjkwcj7h0q2p2e4vrlkzf 2
 		),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 			lockProxy, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				lockProxyBs, err1 := hex.DecodeString(args[0])
@@ -159,7 +160,7 @@ $ %s query %s proxy-hash cosmos1ayc6faczpj42eu7wjsjkwcj7h0q2p2e4vrlkzf stake 2
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 			lockProxy, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				lockProxyBs, err1 := hex.DecodeString(args[0])

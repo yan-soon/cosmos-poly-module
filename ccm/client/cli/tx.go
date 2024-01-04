@@ -19,20 +19,21 @@ package cli
 
 import (
 	"bufio"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
-	"strings"
 
 	"fmt"
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/polynetwork/cosmos-poly-module/ccm/internal/types"
-	"strconv"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -66,7 +67,7 @@ $ %s tx %s process-crosschain-tx 0 'proof_hex_str_at_height_1000' 'header_1000' 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 			fromChainIdStr := args[0]
 			fromChainId, err := strconv.ParseUint(fromChainIdStr, 10, 64)
 			if err != nil {

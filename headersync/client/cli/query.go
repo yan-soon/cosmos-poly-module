@@ -19,19 +19,20 @@ package cli
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
 	polycommon "github.com/polynetwork/poly/common"
-	"strings"
 
 	"github.com/spf13/cobra"
 
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/polynetwork/cosmos-poly-module/headersync/client/common"
 	"github.com/polynetwork/cosmos-poly-module/headersync/internal/types"
-	"strconv"
 )
 
 // GetQueryCmd returns the cli query commands for the minting module.
@@ -70,7 +71,7 @@ $ %s query %s consensus-pper 0
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
 
 			chainIdStr := args[0]
 
