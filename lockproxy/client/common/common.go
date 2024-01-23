@@ -19,15 +19,14 @@ package common
 
 import (
 	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/polynetwork/cosmos-poly-module/lockproxy/internal/types"
 )
 
 // QueryDelegatorTotalRewards queries delegator total rewards.
-func QueryProxyByOperator(cliCtx client.Context, queryRoute string, operator sdk.AccAddress) ([]byte, error) {
+func QueryProxyByOperator(cliCtx context.CLIContext, queryRoute string, operator sdk.AccAddress) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryProxyByOperator),
@@ -37,7 +36,7 @@ func QueryProxyByOperator(cliCtx client.Context, queryRoute string, operator sdk
 }
 
 // QueryDelegatorTotalRewards queries delegator total rewards.
-func QueryProxyHash(cliCtx client.Context, queryRoute string, lockProxyHash []byte, chainId uint64) ([]byte, error) {
+func QueryProxyHash(cliCtx context.CLIContext, queryRoute string, lockProxyHash []byte, chainId uint64) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryProxyHash),
@@ -46,7 +45,7 @@ func QueryProxyHash(cliCtx client.Context, queryRoute string, lockProxyHash []by
 	return res, err
 }
 
-func QueryAssetHash(cliCtx client.Context, queryRoute string, lockProxy []byte, sourceAssetDenom string, chainId uint64) ([]byte, error) {
+func QueryAssetHash(cliCtx context.CLIContext, queryRoute string, lockProxy []byte, sourceAssetDenom string, chainId uint64) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryAssetHash),

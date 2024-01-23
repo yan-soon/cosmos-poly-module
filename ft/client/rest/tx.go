@@ -24,18 +24,17 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 
 	"encoding/hex"
-
 	"github.com/polynetwork/cosmos-poly-module/ft/internal/types"
 )
 
 // RegisterRoutes - Central function to define routes that get registered by the main application
-func registerTxRoutes(cliCtx client.Context, r *mux.Router) {
+func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc(fmt.Sprintf("/ft/create_coins/{%s}", Coins), CreateCoinsRequestHandlerFn(cliCtx)).Methods("POST")
 	r.HandleFunc(fmt.Sprintf("/ft/create_denom/{%s}", Denom), CreateDenomRequestHandlerFn(cliCtx)).Methods("POST")
 	r.HandleFunc("/ft/bind_asset_hash", BindAssetHashRequestHandlerFn(cliCtx)).Methods("POST")
@@ -61,7 +60,7 @@ type LockReq struct {
 	Amount    *big.Int     `json:"amount" yaml:"amount"`
 }
 
-func CreateCoinsRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func CreateCoinsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -89,7 +88,7 @@ func CreateCoinsRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 }
 
 // SendRequestHandlerFn - http request handler to send coins to a address.
-func CreateDenomRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func CreateDenomRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		denom := vars[Denom]
@@ -109,7 +108,7 @@ func CreateDenomRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func BindAssetHashRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func BindAssetHashRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req BindAssetHashReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
@@ -130,7 +129,7 @@ func BindAssetHashRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func LockRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func LockRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req LockReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {

@@ -19,24 +19,23 @@ package cli
 
 import (
 	"bufio"
-	"strings"
-
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
+	"strings"
 
 	"encoding/hex"
 	"fmt"
-	"math/big"
-	"strconv"
-
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/polynetwork/cosmos-poly-module/lockproxy/internal/types"
+	"math/big"
+	"strconv"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -74,7 +73,7 @@ $ %s tx %s create-lock-proxy cosmos1ayc6faczpj42eu7wjsjkwcj7h0q2p2e4vrlkzf
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			msg := types.NewMsgCreateLockProxy(cliCtx.GetFromAddress())
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
@@ -101,7 +100,7 @@ $ $ %s tx %s create-coin-delegate cosmos1lzk4nch5v2snduup2uujpud9j6gqeunqarx2d9 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
 			creator, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -146,7 +145,7 @@ $ %s tx %s bind-proxy-hash 3 0x11223344556677889900
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			toChainIdStr := args[0]
 			toChainProxyHashStr := args[1]
 
@@ -186,7 +185,7 @@ $ %s tx %s bind-asset-hash ont 3 00000000000000000001 100000
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			sourceAssetDenom := args[0]
 
 			toChainIdStr := args[1]
@@ -228,7 +227,7 @@ $ %s tx %s lock 12341234 ont 3 616f2a4a38396ff203ea01e6c070ae421bb8ce2d 123
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
 			lockProxyHash, err := hex.DecodeString(args[0])
 			if err != nil {

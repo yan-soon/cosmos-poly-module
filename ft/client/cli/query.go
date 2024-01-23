@@ -19,19 +19,18 @@ package cli
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
+	"strings"
 
 	"github.com/spf13/cobra"
 
-	"strconv"
-
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/polynetwork/cosmos-poly-module/ft/client/common"
 	"github.com/polynetwork/cosmos-poly-module/ft/internal/types"
+	"strconv"
 )
 
 // GetQueryCmd returns the cli query commands for the minting module.
@@ -71,7 +70,7 @@ $ %s query %s denom-info btcx
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			sourceAssetdenom := args[0]
 
 			res, err := common.QueryDenomInfo(cliCtx, queryRoute, sourceAssetdenom)
@@ -102,7 +101,7 @@ $ %s query %s denom-cross-chain-info btcx 2
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			sourceAssetdenom := args[0]
 
 			chainId, err := strconv.ParseUint(args[1], 10, 64)

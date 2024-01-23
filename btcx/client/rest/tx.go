@@ -22,7 +22,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
@@ -31,7 +31,7 @@ import (
 )
 
 // RegisterRoutes - Central function to define routes that get registered by the main application
-func registerTxRoutes(cliCtx client.Context, r *mux.Router) {
+func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/btcx/create_coin", createCoinRequestHandlerFn(cliCtx)).Methods("POST")
 	r.HandleFunc("/btcx/bind_asset_hash", bindAssetHashRequestHandlerFn(cliCtx)).Methods("POST")
 	r.HandleFunc("/btcx/lock", lockRequestHandlerFn(cliCtx)).Methods("POST")
@@ -59,7 +59,7 @@ type LockReq struct {
 	Value            sdk.Int      `json:"value" yaml:"value"`
 }
 
-func createCoinRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func createCoinRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req CreateCoinReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
@@ -80,7 +80,7 @@ func createCoinRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func bindAssetHashRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func bindAssetHashRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req BindAssetHashReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
@@ -101,7 +101,7 @@ func bindAssetHashRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func lockRequestHandlerFn(cliCtx client.Context) http.HandlerFunc {
+func lockRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req LockReq
 		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {

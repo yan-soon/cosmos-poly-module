@@ -20,10 +20,8 @@ package cli
 import (
 	"encoding/hex"
 	"fmt"
-	"strconv"
-	"strings"
-
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,6 +29,8 @@ import (
 	"github.com/polynetwork/cosmos-poly-module/ccm/client/common"
 	"github.com/polynetwork/cosmos-poly-module/ccm/internal/types"
 	"github.com/spf13/cobra"
+	"strconv"
+	"strings"
 )
 
 // GetQueryCmd returns the cli query commands for the minting module.
@@ -69,7 +69,7 @@ $ %s query %s if-contain-contract btcx c330431496364497d7257839737b5e4596f5ac06 
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
 			keystore := args[0]
 			toContractAddr, _ := hex.DecodeString(args[1])
@@ -102,7 +102,7 @@ $ %s query %s parameters
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			paramsBs, err := common.QueryParams(cliCtx, queryRoute)
 			if err != nil {
 				return err
@@ -130,7 +130,7 @@ $ %s query %s module-balance lockproxy
 		),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			moduleName := args[0]
 
 			res, err := common.QueryModuleBalance(cliCtx, queryRoute, moduleName)

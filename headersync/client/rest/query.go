@@ -23,21 +23,20 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"strconv"
-
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/polynetwork/cosmos-poly-module/headersync/client/common"
+	"strconv"
 )
 
-func registerQueryRoutes(cliCtx client.Context, r *mux.Router, queryRoute string) {
+func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, queryRoute string) {
 	r.HandleFunc(
 		fmt.Sprintf("/headersync/current_consensus_peers/{%s}", ChainId),
 		queryCurrentCPHandlerFn(cliCtx, queryRoute),
 	).Methods("GET")
 }
 
-func queryCurrentCPHandlerFn(cliCtx client.Context, queryRoute string) http.HandlerFunc {
+func queryCurrentCPHandlerFn(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -60,7 +59,7 @@ func queryCurrentCPHandlerFn(cliCtx client.Context, queryRoute string) http.Hand
 }
 
 func checkResponseQueryCPResponse(
-	w http.ResponseWriter, cliCtx client.Context, queryRoute string, chainId uint64) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string, chainId uint64) (res []byte, ok bool) {
 
 	res, err := common.QueryConsensusPeers(cliCtx, queryRoute, chainId)
 	if err != nil {

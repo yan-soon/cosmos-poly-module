@@ -19,12 +19,11 @@ package common
 
 import (
 	"fmt"
-
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/polynetwork/cosmos-poly-module/ccm/internal/types"
 )
 
-func QueryIfContainContract(cliCtx client.Context, queryRoute string, keystore string, toContractAddr []byte, fromChainId uint64) ([]byte, error) {
+func QueryIfContainContract(cliCtx context.CLIContext, queryRoute string, keystore string, toContractAddr []byte, fromChainId uint64) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryIfContainContract),
@@ -33,7 +32,7 @@ func QueryIfContainContract(cliCtx client.Context, queryRoute string, keystore s
 	return res, err
 }
 
-func QueryParams(cliCtx client.Context, queryRoute string) ([]byte, error) {
+func QueryParams(cliCtx context.CLIContext, queryRoute string) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryParameters),
@@ -42,7 +41,7 @@ func QueryParams(cliCtx client.Context, queryRoute string) ([]byte, error) {
 	return res, err
 }
 
-func QueryModuleBalance(cliCtx client.Context, queryRoute string, moduleName string) ([]byte, error) {
+func QueryModuleBalance(cliCtx context.CLIContext, queryRoute string, moduleName string) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.NewQueryModuleBalanceParam(moduleName)),

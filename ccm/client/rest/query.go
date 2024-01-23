@@ -20,18 +20,17 @@ package rest
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/polynetwork/cosmos-poly-module/ccm/client/common"
 	"net/http"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/polynetwork/cosmos-poly-module/ccm/client/common"
-
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 )
 
-func registerQueryRoutes(cliCtx client.Context, r *mux.Router, queryRoute string) {
+func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, queryRoute string) {
 	r.HandleFunc(
 		fmt.Sprintf("/ccm/if_contain_contract/{%s}/{%s}/{%s}", ModuleStoreKey, ToContract, FromChainId),
 		queryIfContainContract(cliCtx, queryRoute),
@@ -48,7 +47,7 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router, queryRoute string
 	).Methods("GET")
 }
 
-func queryIfContainContract(cliCtx client.Context, queryRoute string) http.HandlerFunc {
+func queryIfContainContract(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -77,7 +76,7 @@ func queryIfContainContract(cliCtx client.Context, queryRoute string) http.Handl
 }
 
 func checkResponseQueryIfContainContractResponse(
-	w http.ResponseWriter, cliCtx client.Context, queryRoute string, keyStore string, toContract []byte, fromChainId uint64) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string, keyStore string, toContract []byte, fromChainId uint64) (res []byte, ok bool) {
 
 	res, err := common.QueryIfContainContract(cliCtx, queryRoute, keyStore, toContract, fromChainId)
 	if err != nil {
@@ -88,7 +87,7 @@ func checkResponseQueryIfContainContractResponse(
 	return res, true
 }
 
-func queryParams(cliCtx client.Context, queryRoute string) http.HandlerFunc {
+func queryParams(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -104,7 +103,7 @@ func queryParams(cliCtx client.Context, queryRoute string) http.HandlerFunc {
 }
 
 func checkResponseQueryParamsResponse(
-	w http.ResponseWriter, cliCtx client.Context, queryRoute string) (res []byte, ok bool) {
+	w http.ResponseWriter, cliCtx context.CLIContext, queryRoute string) (res []byte, ok bool) {
 
 	res, err := common.QueryParams(cliCtx, queryRoute)
 	if err != nil {
@@ -115,7 +114,7 @@ func checkResponseQueryParamsResponse(
 	return res, true
 }
 
-func queryModuleBalance(cliCtx client.Context, queryRoute string) http.HandlerFunc {
+func queryModuleBalance(cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {

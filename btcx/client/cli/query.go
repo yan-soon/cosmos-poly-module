@@ -20,6 +20,7 @@ package cli
 import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -66,7 +67,7 @@ $ %s query %s denom-info btcx
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
 			denom := args[0]
 
@@ -99,7 +100,7 @@ $ %s query %s denom-cc-info btcx 2
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
 			denom := args[0]
 			toChainId, err := strconv.ParseUint(args[1], 10, 64)

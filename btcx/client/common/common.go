@@ -19,12 +19,11 @@ package common
 
 import (
 	"fmt"
-
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/polynetwork/cosmos-poly-module/btcx/internal/types"
 )
 
-func QueryDenomInfo(cliCtx client.Context, queryRoute string, denom string) ([]byte, error) {
+func QueryDenomInfo(cliCtx context.CLIContext, queryRoute string, denom string) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryDenomInfo),
@@ -33,7 +32,7 @@ func QueryDenomInfo(cliCtx client.Context, queryRoute string, denom string) ([]b
 	return res, err
 }
 
-func QueryDenomCrossChainInfo(cliCtx client.Context, queryRoute string, denom string, toChainId uint64) ([]byte, error) {
+func QueryDenomCrossChainInfo(cliCtx context.CLIContext, queryRoute string, denom string, toChainId uint64) ([]byte, error) {
 
 	res, _, err := cliCtx.QueryWithData(
 		fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryDenomCrossChainInfo),

@@ -20,8 +20,8 @@ package cli
 import (
 	"bufio"
 	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -55,7 +55,7 @@ func SendSyncGenesisTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			// build and sign the transaction, then broadcast to Tendermint
 			msg := types.NewMsgSyncGenesisParam(cliCtx.GetFromAddress(), args[0])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
@@ -72,7 +72,7 @@ func SendSyncHeaderTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.GetClientQueryContext(cmd).WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			// build and sign the transaction, then broadcast to Tendermint
 			msg := types.NewMsgSyncHeadersParam(cliCtx.GetFromAddress(), []string{args[0]})
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
