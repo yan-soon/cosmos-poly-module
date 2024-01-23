@@ -14,3 +14,5 @@ require (
 	github.com/tendermint/tm-db v0.5.1
 	gotest.tools v2.2.0+incompatible
 )
+
+replace github.com/btcsuite/btcd => github.com/btcsuite/btcd v0.20.1-beta
